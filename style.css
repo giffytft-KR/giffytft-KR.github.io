@@ -1,0 +1,87 @@
+.swiper-slide img {
+    border-radius: 50%;
+  }
+  
+
+  
+body {
+   
+    background-color: black;
+    margin: 0; /* Menghilangkan margin bawaan */
+    padding: 0; /* Menghilangkan padding bawaan */
+    overflow-x: hidden;
+    overflow-y: hidden; /* Mencegah penggeseran horizontal */ /* Opsional: untuk menghilangkan scroll horizontal jika tidak diperlukan */
+}
+.content{
+    width: 100%;
+}
+.card-gif{
+    background-color: black;
+    width: 100%;
+    position: absolute;
+    top: 32%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: aliceblue;
+}
+
+.icon:active {
+    transform: scale(0.9); /* Misalnya, mengurangi skala saat sedang diklik */
+  }
+.hidden {
+    visibility: hidden;
+    
+}
+.alert {
+    width: auto;
+    height: 10px;
+   
+    position: absolute;
+    top: 0; /* Menempatkan elemen di bagian atas halaman */
+    left: 20%;
+    right: 20%; /* Mengisi lebar elemen */
+    display: flex;
+    justify-content: center;
+   
+
+    padding: 10px; /* Padding untuk konten dalam elemen */
+    z-index: 1000; /* Menentukan tingkat kedalaman tumpukan elemen */
+}
+
+.stacked-devices {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+.swiper {
+    width: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  .swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 50%;
+    height: 50%;
+    max-width: 240px;
+    max-height: 240px;
+  }
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+  }
+  @media screen and (max-width: 768px) {
+    /* Atur tata letak untuk layar kecil di sini */
+    
+}

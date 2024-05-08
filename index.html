@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giffy-TFT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="check-circle-fill" viewBox="0 0 16 16">
+      <path
+        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+    </symbol>
+    <symbol id="info-fill" viewBox="0 0 16 16">
+      <path
+        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+    </symbol>
+    <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+      <path
+        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+    </symbol>
+  </svg>
+
+
+  <div class="content">
+    <div class="connected-device hidden">
+      <div class="alert alert-success d-flex align-items-center" id="alert-success"  role="alert">
+        <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Success:">
+          <use xlink:href="#check-circle-fill" />
+        </svg>
+        <div>
+          Gif berhasil diperbarui!
+        </div>
+      </div>
+
+      <div class="alert alert-danger d-flex align-items-center hidden" id="alert-failed" role="alert">
+        <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Danger:">
+          <use xlink:href="#exclamation-triangle-fill" />
+        </svg>
+        <div>
+          Ada Kesalahan. Harap Reload Halaman Website.
+        </div>
+      </div>
+        <div class="card card-gif ">
+          <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide" data-value="1">
+                <img src="GIF/1.gif" />
+              </div>
+              <div class="swiper-slide" data-value="2">
+                <img src="GIF/2.gif" />
+              </div>
+              <div class="swiper-slide" data-value="3">
+                <img src="GIF/3.gif" />
+              </div>
+              <div class="swiper-slide" data-value="4">
+                <img src="GIF/4.gif" />
+              </div>
+              <div class="swiper-slide" data-value="5">
+                <img src="GIF/5.gif" />
+              </div>
+              <div class="swiper-slide" data-value="6">
+                <img src="GIF/6.gif" />
+              </div>
+              <div class="swiper-slide" data-value="7">
+                <img src="GIF/7.gif" />
+              </div>
+              <div class="swiper-slide" data-value="8">
+                <img src="GIF/8.gif" />
+              </div>
+              <div class="swiper-slide" data-value="9">
+                <img src="GIF/9.gif" />
+              </div>
+              <div class="swiper-slide" data-value="10">
+                <img src="GIF/10.gif" />
+              </div>
+              <div class="swiper-slide" data-value="11">
+                <img src="GIF/11.gif" />
+              </div>
+               
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
+        </div>
+    
+    </div>
+    <div class="connect-device d-flex align-items-center stacked-devices">
+      <div class="icon d-flex justify-content-center align-items-center" onclick="hideConnectDevice()" style="background-color: aliceblue; width: 150px; height: 150px; border-radius: 50%;">
+        <img src="podcast-icon.png" width="75%" alt="" srcset="">
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    let device;
+    let characteristic;
+    let alert = false;
+    var Success = document.querySelector('#alert-success');
+    var Failed = document.querySelector('#alert-failed');
+    function successAlert() {
+      if (alert) {
+        Success.classList.remove('hidden');
+        setTimeout(function () {
+          alert = false;
+          Success.classList.add('hidden');
+        }, 3000);
+      }
+    }
+    function failedAlert() {
+      if (alert) {
+        Failed.classList.remove('hidden');
+        setTimeout(function () {
+          alert = false;
+          Failed.classList.add('hidden');
+        }, 3000);
+      }
+    }
+    Success.classList.add('hidden');
+    Failed.classList.add('hidden');
+    async function hideConnectDevice() {
+      var connectDevice = document.querySelector('.connect-device');
+      var connectedDevice = document.querySelector('.connected-device');
+      try {
+        device = await navigator.bluetooth.requestDevice({
+          filters: [{ services: [0x180D] }] // UUID untuk layanan yang sama dengan yang digunakan di ESP32
+        });
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService(0x180D);
+        characteristic = await service.getCharacteristic(0x2A37);
+        console.log('Connected to ESP32');
+        connectDevice.classList.add('hidden');
+        connectedDevice.classList.remove('hidden');
+      } catch (error) {
+        console.error('Error connecting to ESP32:', error);
+      }
+    }
+    async function changegif(newValue) {
+      if (device && device.gatt.connected && characteristic) {
+        try {
+          await characteristic.writeValue(new TextEncoder().encode(newValue));
+          console.log('Nilai telah diubah menjadi:', newValue);
+
+          alert = true;
+          successAlert();
+        } catch (error) {
+          alert = true;
+          failedAlert();
+          console.error('Gagal mengubah nilai:', error);
+        }
+      }
+    }
+    var swiper = new Swiper(".mySwiper", {
+      effect: "coverflow",
+      grabCursor: true,
+      loop: true,
+      centeredSlides: true,
+      slidesPerView:"auto",
+      coverflowEffect: {
+        rotate: 0,
+        stretch: 0,
+        depth: 300,
+        modifier: 4.5,
+        slideShadows: false,
+      },
+      on: {
+        doubleTap: function () {
+          
+          var activeSlide = this.slides[this.activeIndex];
+
+          // Mendapatkan nilai dari atribut data-value
+          var value = activeSlide.getAttribute('data-value');
+          // Logging nilai data-value
+          console.log('Nilai data-value:', value);
+          // Fungsi yang akan dipanggil ketika double tap terdeteksi
+          console.log('Double tap terdeteksi!');
+          changegif(value);
+          // Anda dapat menambahkan tindakan lain yang ingin dilakukan di sini
+        }
+      }
+    });
+
+  </script>
+</body>
+
+</html>
