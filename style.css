@@ -15,11 +15,14 @@ body {
 .content{
     width: 100%;
 }
+.card-header{
+  margin-bottom: -125px;
+}
 .card-gif{
     background-color: black;
     width: 100%;
     position: absolute;
-    top: 32%;
+    top: 17%;
     left: 0;
     right: 0;
     bottom: 0;
@@ -35,12 +38,12 @@ body {
 }
 .alert {
     width: auto;
-    height: 10px;
+    height: 30px;
    
     position: absolute;
-    top: 0; /* Menempatkan elemen di bagian atas halaman */
-    left: 20%;
-    right: 20%; /* Mengisi lebar elemen */
+    top: 1%; /* Menempatkan elemen di bagian atas halaman */
+    left: 10%;
+    right: 10%; /* Mengisi lebar elemen */
     display: flex;
     justify-content: center;
    
@@ -54,7 +57,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom:0;
     display: flex;
     justify-content: center;
     align-items: center;

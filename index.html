@@ -9,6 +9,8 @@
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/ico.png" type="image/png">
+
 </head>
 
 <body>
@@ -30,12 +32,20 @@
 
   <div class="content">
     <div class="connected-device hidden">
+      <div class="alert alert-success d-flex align-items-center" id="alert-connected"  role="alert">
+        <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Success:">
+          <use xlink:href="#check-circle-fill" />
+        </svg>
+        <div>
+          Success . Device Connected!
+        </div>
+      </div>
       <div class="alert alert-success d-flex align-items-center" id="alert-success"  role="alert">
         <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Success:">
           <use xlink:href="#check-circle-fill" />
         </svg>
         <div>
-          Gif berhasil diperbarui!
+          Success . Gif Segera Di Update!
         </div>
       </div>
 
@@ -43,46 +53,14 @@
         <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Danger:">
           <use xlink:href="#exclamation-triangle-fill" />
         </svg>
-        <div>
-          Ada Kesalahan. Harap Reload Halaman Website.
-        </div>
+          Failed . Segera Reload Halaman!
       </div>
         <div class="card card-gif ">
+          <div class="card-header d-flex justify-content-center">
+            <img src="h1.png"width="80%" style="max-width: 240px;" alt="" srcset="">
+          </div>
           <div class="swiper mySwiper">
             <div class="swiper-wrapper">
-              <div class="swiper-slide" data-value="1">
-                <img src="GIF/1.gif" />
-              </div>
-              <div class="swiper-slide" data-value="2">
-                <img src="GIF/2.gif" />
-              </div>
-              <div class="swiper-slide" data-value="3">
-                <img src="GIF/3.gif" />
-              </div>
-              <div class="swiper-slide" data-value="4">
-                <img src="GIF/4.gif" />
-              </div>
-              <div class="swiper-slide" data-value="5">
-                <img src="GIF/5.gif" />
-              </div>
-              <div class="swiper-slide" data-value="6">
-                <img src="GIF/6.gif" />
-              </div>
-              <div class="swiper-slide" data-value="7">
-                <img src="GIF/7.gif" />
-              </div>
-              <div class="swiper-slide" data-value="8">
-                <img src="GIF/8.gif" />
-              </div>
-              <div class="swiper-slide" data-value="9">
-                <img src="GIF/9.gif" />
-              </div>
-              <div class="swiper-slide" data-value="10">
-                <img src="GIF/10.gif" />
-              </div>
-              <div class="swiper-slide" data-value="11">
-                <img src="GIF/11.gif" />
-              </div>
                
             </div>
             <div class="swiper-pagination"></div>
@@ -90,9 +68,12 @@
         </div>
     
     </div>
-    <div class="connect-device d-flex align-items-center stacked-devices">
-      <div class="icon d-flex justify-content-center align-items-center" onclick="hideConnectDevice()" style="background-color: aliceblue; width: 150px; height: 150px; border-radius: 50%;">
-        <img src="podcast-icon.png" width="75%" alt="" srcset="">
+    <div class="connect-device stacked-devices">
+      <div class="logo d-flex justify-content-center">
+        <img src="logo.png" width="88%" alt="" srcset="">
+      </div>
+      <div class="icon d-flex justify-content-center align-items-center" onclick="hideConnectDevice()">
+        <img src="connect.png" width="90%" alt="" srcset="">
       </div>
     </div>
 
@@ -107,7 +88,33 @@
     let characteristic;
     let alert = false;
     var Success = document.querySelector('#alert-success');
+    var Connectedd = document.querySelector('#alert-connected');
     var Failed = document.querySelector('#alert-failed');
+    function generateSwiperSlides(numSlides) {
+      var swiperWrapper = document.querySelector('.swiper-wrapper');
+      
+      for (var i = 1; i <= numSlides; i++) {
+        var div = document.createElement('div');
+        div.classList.add('swiper-slide');
+        div.dataset.value = i;
+        
+        var img = document.createElement('img');
+        img.src = 'GIF/' + i + '.gif';
+        
+        div.appendChild(img);
+        swiperWrapper.appendChild(div);
+      }
+    }
+    generateSwiperSlides(23);
+    function connectedAlert() {
+      if (alert) {
+        Connectedd.classList.remove('hidden');
+        setTimeout(function () {
+          alert = false;
+          Connectedd.classList.add('hidden');
+        }, 3000);
+      }
+    }
     function successAlert() {
       if (alert) {
         Success.classList.remove('hidden');
@@ -126,44 +133,53 @@
         }, 3000);
       }
     }
+    
     Success.classList.add('hidden');
+    Connectedd.classList.add('hidden');
     Failed.classList.add('hidden');
     async function hideConnectDevice() {
       var connectDevice = document.querySelector('.connect-device');
       var connectedDevice = document.querySelector('.connected-device');
       try {
         device = await navigator.bluetooth.requestDevice({
-          filters: [{ services: [0x180D] }] // UUID untuk layanan yang sama dengan yang digunakan di ESP32
+          filters: [{ services: ['dee13011-14d8-4e12-94af-a6edfeaa1af9'] }] // UUID untuk layanan yang sama dengan yang digunakan di ESP32
         });
         const server = await device.gatt.connect();
-        const service = await server.getPrimaryService(0x180D);
-        characteristic = await service.getCharacteristic(0x2A37);
+        const service = await server.getPrimaryService('dee13011-14d8-4e12-94af-a6edfeaa1af9');
+        characteristic = await service.getCharacteristic('dee13012-14d8-4e12-94af-a6edfeaa1af9');
         console.log('Connected to ESP32');
         connectDevice.classList.add('hidden');
         connectedDevice.classList.remove('hidden');
+        alert = true;
+        connectedAlert();
       } catch (error) {
         console.error('Error connecting to ESP32:', error);
       }
     }
     async function changegif(newValue) {
-      if (device && device.gatt.connected && characteristic) {
-        try {
-          await characteristic.writeValue(new TextEncoder().encode(newValue));
-          console.log('Nilai telah diubah menjadi:', newValue);
+  if (device && device.gatt && device.gatt.connected && characteristic) {
+    try {
+      await characteristic.writeValue(new TextEncoder().encode(newValue));
+      console.log('Nilai telah diubah menjadi:', newValue);
 
-          alert = true;
-          successAlert();
-        } catch (error) {
-          alert = true;
-          failedAlert();
-          console.error('Gagal mengubah nilai:', error);
-        }
-      }
+      alert = true;
+      successAlert();
+    } catch (error) {
+      alert = true;
+      failedAlert();
+      console.error('Gagal mengubah nilai:', error);
     }
+  } else {
+    console.error('Tidak dapat mengirim nilai baru: Perangkat tidak terhubung atau karakteristik tidak tersedia.');
+    alert = true;
+    failedAlert();
+  }
+}
+
     var swiper = new Swiper(".mySwiper", {
       effect: "coverflow",
       grabCursor: true,
-      loop: true,
+      loop: false,
       centeredSlides: true,
       slidesPerView:"auto",
       coverflowEffect: {
