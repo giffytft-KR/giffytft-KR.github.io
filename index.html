@@ -65,7 +65,7 @@
           <div class="swiper-pagination"></div>
         </div>
       </div>
-      <div class="statusboard">
+      <div class="statusboard" onclick="openPopupForm()">
         <p>Status Board : Loading...</p>
       </div>
     </div>
@@ -79,29 +79,37 @@
     </div>
 
   </div>
-<!-- Popup form -->
-<div class="modal fade" id="popupForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="popupFormLabel">Board Locked</h5>
-       
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Please purchase a token to unlock the board.</p>
-        <form>
-          <div class="mb-3">
-            <p id="device">Device : <span id="deviceValue">Loading...</span></p>
-            <label for="username" class="form-label">Token</label>
-            <input type="text" class="form-control" id="username" required>
+  <!-- Popup form -->
+  <div class="modal fade" id="popupForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center">
+          <h5 class="modal-title" id="popupFormLabel">Perangkat Terkunci</h5>
+
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body ">
+          <div class="d-flex justify-content-center">
+            <p>Hubungi Layanan Pelanggan Kami untuk Mendapatkan Token.</p>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between ms-2 me-2 mb-2">
+              <label for="device" class="form-label">Device</label>
+              <input type="text" style="width: 50%;" id="deviceValue" class="form-control" readonly value="" id="device"
+                required>
+            </div>
+            <div class="d-flex justify-content-between ms-2 me-2">
+              <label for="token" class="form-label">Token</label>
+              <input type="text" style="width: 50%;" class="form-control" value="" name="token" id="token" required>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button onclick="submitToken()" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
@@ -110,6 +118,7 @@
     let device;
     let characteristic;
     let tft;
+    let key;
     let alert = false;
     let locked = false;
     var Success = document.querySelector('#alert-success');
@@ -118,20 +127,26 @@
     let statusboard;
     function generateSwiperSlides(numSlides) {
       var swiperWrapper = document.querySelector('.swiper-wrapper');
-
       for (var i = 1; i <= numSlides; i++) {
         var div = document.createElement('div');
         div.classList.add('swiper-slide');
         div.dataset.value = i;
-
         var img = document.createElement('img');
         img.src = 'GIF/' + i + '.gif';
-
         div.appendChild(img);
         swiperWrapper.appendChild(div);
       }
     }
     generateSwiperSlides(24);
+    function submitToken() {
+      var tokenValue = document.getElementById("token").value;
+      console.log("Token yang di-submit:", tokenValue);
+      sendkey(tokenValue);
+      var closeBtn = document.querySelector('.btn-close');
+      closeBtn.click();
+
+    }
+
     function connectedAlert() {
       if (alert) {
         Connectedd.classList.remove('hidden');
@@ -170,11 +185,12 @@
         device = await navigator.bluetooth.requestDevice({
           filters: [{ services: ['dee13011-14d8-4e12-94af-a6edfeaa1af9'] }] // UUID untuk layanan yang sama dengan yang digunakan di ESP32
         });
-        document.getElementById("deviceValue").textContent = device.name;
+        document.getElementById("deviceValue").value = device.name;
         const server = await device.gatt.connect();
         const service = await server.getPrimaryService('dee13011-14d8-4e12-94af-a6edfeaa1af9');
         characteristic = await service.getCharacteristic('dee13013-14d8-4e12-94af-a6edfeaa1af9');
         tft = await service.getCharacteristic('dee13012-14d8-4e12-94af-a6edfeaa1af9');
+        key = await service.getCharacteristic('dee13014-14d8-4e12-94af-a6edfeaa1af9');
         readstatus();
         console.log('Connected to ESP32');
         connectDevice.classList.add('hidden');
@@ -186,11 +202,15 @@
       }
     }
     function openPopupForm() {
-    var myModal = new bootstrap.Modal(document.getElementById('popupForm'), {
-      keyboard: false
-    });
-    myModal.show();
-  }
+      const statusBoardElement = document.querySelector('.statusboard');
+      const statusText = statusBoardElement.textContent;
+      if (statusText != "UNLOCKED") {
+        var myModal = new bootstrap.Modal(document.getElementById('popupForm'), {
+          keyboard: false
+        });
+        myModal.show();
+      }
+    }
     async function readstatus() {
       characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
       characteristic.startNotifications();
@@ -202,9 +222,11 @@
       console.log("status: ", statusboard);
       if (statusboard === "LOCKED") {
         locked = true;
+      } else if (statusboard === "UNLOCKED") {
+        locked = false;
       }
       const statusBoardElement = document.querySelector('.statusboard');
-      statusBoardElement.innerHTML = `<p>Status Board : ${statusboard}</p>`;
+      statusBoardElement.innerHTML = `<p>${statusboard}</p>`;
       if (locked) {
         openPopupForm();
       }
@@ -221,6 +243,21 @@
           alert = true;
           failedAlert();
           console.error('Gagal mengubah nilai:', error);
+        }
+      } else {
+        console.error('Tidak dapat mengirim nilai baru: Perangkat tidak terhubung atau karakteristik tidak tersedia.');
+        alert = true;
+        failedAlert();
+      }
+    }
+    async function sendkey(newValue) {
+      if (device && device.gatt && device.gatt.connected && key) {
+        try {
+          await key.writeValue(new TextEncoder().encode(newValue));
+          readstatus();
+        } catch (error) {
+          alert = true;
+          failedAlert();
         }
       } else {
         console.error('Tidak dapat mengirim nilai baru: Perangkat tidak terhubung atau karakteristik tidak tersedia.');

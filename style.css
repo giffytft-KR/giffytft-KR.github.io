@@ -1,15 +1,14 @@
 .swiper-slide img {
     border-radius: 50%;
   }
-  
-
-  
+    
 body {
    
     background-color: black;
     margin: 0; /* Menghilangkan margin bawaan */
     padding: 0; /* Menghilangkan padding bawaan */
     overflow-x: hidden;
+    overflow-y: hidden; /* Mencegah penggeseran horizontal */ /* Opsional: untuk menghilangkan scroll horizontal jika tidak diperlukan */
 }
 .content{
     width: 100%;
@@ -21,7 +20,7 @@ body {
     background-color: black;
     width: 100%;
     position: absolute;
-    top: 17%;
+    top: 15%;
     left: 0;
     right: 0;
     bottom: 0;
@@ -31,11 +30,13 @@ body {
 .statusboard{
   width: 100%;
   position: absolute;
-  top: 95%;
-  left: 1%;
+  top: 93.5%;
+  left: 0;
   right: 0;
   bottom: 0;
-  color: aliceblue;
+  display: flex;
+  justify-content: center;
+  color: white;
 }
 
 .icon:active {
