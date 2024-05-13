@@ -10,7 +10,6 @@ body {
     margin: 0; /* Menghilangkan margin bawaan */
     padding: 0; /* Menghilangkan padding bawaan */
     overflow-x: hidden;
-    overflow-y: hidden; /* Mencegah penggeseran horizontal */ /* Opsional: untuk menghilangkan scroll horizontal jika tidak diperlukan */
 }
 .content{
     width: 100%;
