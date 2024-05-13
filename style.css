@@ -29,9 +29,24 @@ body {
     color: aliceblue;
 }
 
+.statusboard{
+  width: 100%;
+  position: absolute;
+  top: 95%;
+  left: 1%;
+  right: 0;
+  bottom: 0;
+  color: aliceblue;
+}
+
 .icon:active {
-    transform: scale(0.9); /* Misalnya, mengurangi skala saat sedang diklik */
-  }
+    transform: scale(0.9);
+     /* Misalnya, mengurangi skala saat sedang diklik */  :;
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -o-transform: scale(0.9);
+}
 .hidden {
     visibility: hidden;
     

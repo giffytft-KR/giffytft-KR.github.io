@@ -32,7 +32,7 @@
 
   <div class="content">
     <div class="connected-device hidden">
-      <div class="alert alert-success d-flex align-items-center" id="alert-connected"  role="alert">
+      <div class="alert alert-success d-flex align-items-center" id="alert-connected" role="alert">
         <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Success:">
           <use xlink:href="#check-circle-fill" />
         </svg>
@@ -40,7 +40,7 @@
           Success . Device Connected!
         </div>
       </div>
-      <div class="alert alert-success d-flex align-items-center" id="alert-success"  role="alert">
+      <div class="alert alert-success d-flex align-items-center" id="alert-success" role="alert">
         <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Success:">
           <use xlink:href="#check-circle-fill" />
         </svg>
@@ -53,20 +53,21 @@
         <svg class="bi flex-shrink-0 me-2" style="width: 20px;" role="img" aria-label="Danger:">
           <use xlink:href="#exclamation-triangle-fill" />
         </svg>
-          Failed . Segera Reload Halaman!
+        Failed . Segera Reload Halaman!
       </div>
-        <div class="card card-gif ">
-          <div class="card-header d-flex justify-content-center">
-            <img src="h1.png"width="80%" style="max-width: 240px;" alt="" srcset="">
-          </div>
-          <div class="swiper mySwiper">
-            <div class="swiper-wrapper">
-               
-            </div>
-            <div class="swiper-pagination"></div>
-          </div>
+      <div class="card card-gif ">
+        <div class="card-header d-flex justify-content-center">
+          <img src="h1.png" width="80%" style="max-width: 240px;" alt="" srcset="">
         </div>
-    
+        <div class="swiper mySwiper">
+          <div class="swiper-wrapper">
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+      <div class="statusboard">
+        <p>Status Board : Loading...</p>
+      </div>
     </div>
     <div class="connect-device stacked-devices">
       <div class="logo d-flex justify-content-center">
@@ -78,7 +79,29 @@
     </div>
 
   </div>
-
+<!-- Popup form -->
+<div class="modal fade" id="popupForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupFormLabel">Board Locked</h5>
+       
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Please purchase a token to unlock the board.</p>
+        <form>
+          <div class="mb-3">
+            <p id="device">Device : <span id="deviceValue">Loading...</span></p>
+            <label for="username" class="form-label">Token</label>
+            <input type="text" class="form-control" id="username" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
@@ -86,26 +109,29 @@
   <script>
     let device;
     let characteristic;
+    let tft;
     let alert = false;
+    let locked = false;
     var Success = document.querySelector('#alert-success');
     var Connectedd = document.querySelector('#alert-connected');
     var Failed = document.querySelector('#alert-failed');
+    let statusboard;
     function generateSwiperSlides(numSlides) {
       var swiperWrapper = document.querySelector('.swiper-wrapper');
-      
+
       for (var i = 1; i <= numSlides; i++) {
         var div = document.createElement('div');
         div.classList.add('swiper-slide');
         div.dataset.value = i;
-        
+
         var img = document.createElement('img');
         img.src = 'GIF/' + i + '.gif';
-        
+
         div.appendChild(img);
         swiperWrapper.appendChild(div);
       }
     }
-    generateSwiperSlides(23);
+    generateSwiperSlides(24);
     function connectedAlert() {
       if (alert) {
         Connectedd.classList.remove('hidden');
@@ -133,7 +159,7 @@
         }, 3000);
       }
     }
-    
+
     Success.classList.add('hidden');
     Connectedd.classList.add('hidden');
     Failed.classList.add('hidden');
@@ -144,9 +170,12 @@
         device = await navigator.bluetooth.requestDevice({
           filters: [{ services: ['dee13011-14d8-4e12-94af-a6edfeaa1af9'] }] // UUID untuk layanan yang sama dengan yang digunakan di ESP32
         });
+        document.getElementById("deviceValue").textContent = device.name;
         const server = await device.gatt.connect();
         const service = await server.getPrimaryService('dee13011-14d8-4e12-94af-a6edfeaa1af9');
-        characteristic = await service.getCharacteristic('dee13012-14d8-4e12-94af-a6edfeaa1af9');
+        characteristic = await service.getCharacteristic('dee13013-14d8-4e12-94af-a6edfeaa1af9');
+        tft = await service.getCharacteristic('dee13012-14d8-4e12-94af-a6edfeaa1af9');
+        readstatus();
         console.log('Connected to ESP32');
         connectDevice.classList.add('hidden');
         connectedDevice.classList.remove('hidden');
@@ -156,32 +185,56 @@
         console.error('Error connecting to ESP32:', error);
       }
     }
-    async function changegif(newValue) {
-  if (device && device.gatt && device.gatt.connected && characteristic) {
-    try {
-      await characteristic.writeValue(new TextEncoder().encode(newValue));
-      console.log('Nilai telah diubah menjadi:', newValue);
-
-      alert = true;
-      successAlert();
-    } catch (error) {
-      alert = true;
-      failedAlert();
-      console.error('Gagal mengubah nilai:', error);
-    }
-  } else {
-    console.error('Tidak dapat mengirim nilai baru: Perangkat tidak terhubung atau karakteristik tidak tersedia.');
-    alert = true;
-    failedAlert();
+    function openPopupForm() {
+    var myModal = new bootstrap.Modal(document.getElementById('popupForm'), {
+      keyboard: false
+    });
+    myModal.show();
   }
-}
+    async function readstatus() {
+      characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
+      characteristic.startNotifications();
+      console.log("Notifications Started.");
+      characteristic.readValue();
+    }
+    function handleCharacteristicChange(event) {
+      statusboard = new TextDecoder().decode(event.target.value);
+      console.log("status: ", statusboard);
+      if (statusboard === "LOCKED") {
+        locked = true;
+      }
+      const statusBoardElement = document.querySelector('.statusboard');
+      statusBoardElement.innerHTML = `<p>Status Board : ${statusboard}</p>`;
+      if (locked) {
+        openPopupForm();
+      }
+    }
+    async function changegif(newValue) {
+      if (device && device.gatt && device.gatt.connected && tft) {
+        try {
+          await tft.writeValue(new TextEncoder().encode(newValue));
+          console.log('Nilai telah diubah menjadi:', newValue);
+          alert = true;
+          successAlert();
+          readstatus();
+        } catch (error) {
+          alert = true;
+          failedAlert();
+          console.error('Gagal mengubah nilai:', error);
+        }
+      } else {
+        console.error('Tidak dapat mengirim nilai baru: Perangkat tidak terhubung atau karakteristik tidak tersedia.');
+        alert = true;
+        failedAlert();
+      }
+    }
 
     var swiper = new Swiper(".mySwiper", {
       effect: "coverflow",
       grabCursor: true,
       loop: false,
       centeredSlides: true,
-      slidesPerView:"auto",
+      slidesPerView: "auto",
       coverflowEffect: {
         rotate: 0,
         stretch: 0,
@@ -191,7 +244,7 @@
       },
       on: {
         doubleTap: function () {
-          
+
           var activeSlide = this.slides[this.activeIndex];
 
           // Mendapatkan nilai dari atribut data-value
@@ -205,7 +258,9 @@
         }
       }
     });
-
+    window.__lc = window.__lc || {};
+    window.__lc.license = 17899545;
+    ; (function (n, t, c) { function i(n) { return e._h ? e._h.apply(null, n) : e._q.push(n) } var e = { _q: [], _h: null, _v: "2.0", on: function () { i(["on", c.call(arguments)]) }, once: function () { i(["once", c.call(arguments)]) }, off: function () { i(["off", c.call(arguments)]) }, get: function () { if (!e._h) throw new Error("[LiveChatWidget] You can't use getters before load."); return i(["get", c.call(arguments)]) }, call: function () { i(["call", c.call(arguments)]) }, init: function () { var n = t.createElement("script"); n.async = !0, n.type = "text/javascript", n.src = "https://cdn.livechatinc.com/tracking.js", t.head.appendChild(n) } }; !n.__lc.asyncInit && e.init(), n.LiveChatWidget = n.LiveChatWidget || e }(window, document, [].slice))
   </script>
 </body>
 
