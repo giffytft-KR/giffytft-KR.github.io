@@ -1,105 +1,93 @@
-.swiper-slide img {
-    border-radius: 50%;
-  }
-    
+html,
 body {
-   
-    background-color: black;
-    margin: 0; /* Menghilangkan margin bawaan */
-    padding: 0; /* Menghilangkan padding bawaan */
-    overflow-x: hidden;
-    overflow-y: hidden; /* Mencegah penggeseran horizontal */ /* Opsional: untuk menghilangkan scroll horizontal jika tidak diperlukan */
-}
-.content{
-    width: 100%;
-}
-.card-header{
-  margin-bottom: -125px;
-}
-.card-gif{
-    background-color: black;
-    width: 100%;
-    position: absolute;
-    top: 15%;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    color: aliceblue;
+  position: relative;
+  height: 100%;
 }
 
-.statusboard{
-  width: 100%;
+body {
+  background: #eee;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #000;
+  margin: 0;
+  padding: 0;
+}
+
+.connect {
+  width: 240px;
+  height: 240px;
   position: absolute;
-  top: 93.5%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  color: white;
+  left: 50%;
+  top: 68%;
+  margin-left: -120px;
+  margin-top: -120px;
 }
 
-.icon:active {
-    transform: scale(0.9);
-     /* Misalnya, mengurangi skala saat sedang diklik */  :;
-    -webkit-transform: scale(0.9);
-    -moz-transform: scale(0.9);
-    -ms-transform: scale(0.9);
-    -o-transform: scale(0.9);
-}
-.hidden {
-    visibility: hidden;
-    
-}
-.alert {
-    width: auto;
-    height: 30px;
-   
-    position: absolute;
-    top: 1%; /* Menempatkan elemen di bagian atas halaman */
-    left: 10%;
-    right: 10%; /* Mengisi lebar elemen */
-    display: flex;
-    justify-content: center;
-   
-
-    padding: 10px; /* Padding untuk konten dalam elemen */
-    z-index: 1000; /* Menentukan tingkat kedalaman tumpukan elemen */
+.connect img {
+  width: 100%;
 }
 
-.stacked-devices {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom:0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.connect:active {
+  transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  -moz-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  -o-transform: scale(0.9);
 }
-
 
 .swiper {
-    width: 100%;
-    padding-top: 50px;
-    padding-bottom: 50px;
-  }
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  margin-left: -150px;
+  margin-top: -150px;
+}
 
-  .swiper-slide {
-    background-position: center;
-    background-size: cover;
-    width: 50%;
-    height: 50%;
-    max-width: 240px;
-    max-height: 240px;
-  }
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+}
 
-  .swiper-slide img {
-    display: block;
-    width: 100%;
-  }
-  @media screen and (max-width: 768px) {
-    /* Atur tata letak untuk layar kecil di sini */
-    
+.swiper-slide img {
+  display: block;
+  width: 100%;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 33%;
+  margin-left: -150px;
+  margin-top: -150px;
+  display: flex;
+  justify-content: center;
+}
+
+.logo img {
+  width: 100%;
+  max-width: 300px;
+}
+
+.alert {
+  background-color: greenyellow;
+  position: absolute;
+  top: 1%;
+  width: 80%;
+  height: auto;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  font-size: medium;
+  text-align: center;
+}
+
+.hidden {
+  visibility: hidden;
 }
