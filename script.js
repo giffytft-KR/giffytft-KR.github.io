@@ -71,7 +71,6 @@ async function connect() {
         device = await navigator.bluetooth.requestDevice({
             filters: [{ services: [uuidService] }]
         });
-        document.getElementById("deviceValue").value = device.name;
         const server = await device.gatt.connect();
         const service = await server.getPrimaryService(uuidService);
         tft = await service.getCharacteristic(uuidChar);
