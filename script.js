@@ -1,4 +1,4 @@
-let totalGIF = 44;
+let totalGIF = 91;
 let device;
 let tft;
 let success = "#D1E7DD";

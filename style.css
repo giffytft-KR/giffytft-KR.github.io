@@ -40,7 +40,7 @@ body {
   height: 240px;
   position: absolute;
   left: 50%;
-  top: 60%;
+  top: 70%;
   margin-left: -120px;
   margin-top: -120px;
 }
@@ -57,16 +57,16 @@ body {
 
 .logo {
   position: absolute;
-  left: 50%;
-  top: 33%;
-  margin-left: -150px;
-  margin-top: -150px;
+  top: 10%;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
 
+
 .logo img {
   width: 100%;
+
   max-width: 300px;
 }
 
